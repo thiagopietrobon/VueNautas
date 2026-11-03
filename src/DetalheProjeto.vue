@@ -54,8 +54,7 @@ watch(idProjeto, buscarProjeto, { immediate: true })
     </div>
 
     <p v-if="carregando" class="mensagem" role="status">Buscando projeto e tarefas...</p>
-    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">{{ erro }} Verifique se o json-server está rodando
-      na porta 3000.</p>
+    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">{{ erro }}</p>
 
     <template v-else-if="projeto">
       <section class="painel-detalhes">

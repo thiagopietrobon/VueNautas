@@ -177,9 +177,11 @@ async function salvarProjeto() {
       await router.push('/projetos')
     }
   } catch (erroSalvar) {
-    erro.value = erroSalvar instanceof Error
-    ? erroSalvar.message
-    : 'Não foi possível salvar o projeto. Verifique se a API está ativa.'
+    const mensagem = erroSalvar instanceof Error
+      ? erroSalvar.message
+      : 'Verifique se a API está ativa.'
+
+    erro.value = `Não foi possível salvar o projeto. ${mensagem}`
   } finally {
     salvando.value = false
   }

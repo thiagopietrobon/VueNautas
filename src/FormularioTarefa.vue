@@ -230,9 +230,11 @@ async function salvarTarefa() {
       await router.push('/')
     }
   } catch (erroSalvar) {
-    erro.value = erroSalvar instanceof Error
+    const mensagem = erroSalvar instanceof Error
       ? erroSalvar.message
-      : 'Não foi possível salvar a tarefa. Verifique se a API está ativa.'
+      : 'Verifique se a API está ativa.'
+
+    erro.value = `Não foi possível salvar a tarefa. ${mensagem}`
   } finally {
     salvando.value = false
   }

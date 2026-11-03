@@ -42,8 +42,7 @@ onMounted(buscarProjetos)
   </div>
 
     <p v-if="carregando" class="mensagem" role="status">Carregando projetos...</p>
-    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">{{ erro }} Verifique se o json-server está rodando
-      na porta 3000.</p>
+    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">{{ erro }}</p>
     <div v-else-if="projetos.length === 0" class="mensagem">Nenhum projeto cadastrado.</div>
     <section v-else class="grade-cartoes" aria-label="Lista de projetos">
       <CartaoProjeto v-for="projeto in projetos" :key="projeto.id" :projeto="projeto" />

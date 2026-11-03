@@ -33,20 +33,59 @@ export class ErroApi extends Error {
 }
 
 
+function mensagemPorStatus(status: number): string {
+    if (status === 404) {
+        return "O registro solicitado não foi encontrado.";
+    }
+
+    if (status === 409) {
+        return "Não foi possível concluir a operação porque os dados foram alterados. Tente novamente.";
+    }
+
+    if (status >= 500) {
+        return "A API encontrou um erro interno. Tente novamente em instantes.";
+    }
+
+    return `A API respondeu com status ${status}.`;
+}
+
 async function requisitar<T>(
     caminho: string,
     opcoes?: RequestInit,
 ): Promise<T> {
-    const resposta = await fetch(`${API_URL}${caminho}`, opcoes);
+    let resposta: Response;
 
-    if (!resposta.ok) {
+    try {
+        resposta = await fetch(`${API_URL}${caminho}`, opcoes);
+    } catch {
         throw new ErroApi(
-            resposta.status,
-            `A API respondeu com status ${resposta.status}.`,
+            0,
+            "Não foi possível conectar à API. Verifique se o json-server está rodando na porta 3000.",
         );
     }
 
-    return (await resposta.json()) as T;
+    if (!resposta.ok) {
+        throw new ErroApi(resposta.status, mensagemPorStatus(resposta.status));
+    }
+
+    if (resposta.status === 204) {
+        return undefined as unknown as T;
+    }
+
+    const texto = await resposta.text();
+
+    if (!texto) {
+        return undefined as unknown as T;
+    }
+
+    try {
+        return JSON.parse(texto) as T;
+    } catch {
+        throw new ErroApi(
+            resposta.status,
+            "A API retornou uma resposta inválida.",
+        );
+    }
 }
 
 
@@ -126,4 +165,10 @@ export function listarTarefas(): Promise<Tarefa[]> {
 
 export function buscarTarefa(id: string): Promise<Tarefa> {
     return requisitar<Tarefa>(`/tarefas/${encodeURIComponent(id)}`);
+}
+
+export function excluirTarefa(id: string): Promise<void> {
+    return requisitar<void>(`/tarefas/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+    });
 }
