@@ -1,21 +1,38 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+<<<<<<< HEAD
 import { atualizarTarefa, excluirTarefa, listarTarefas } from './api'
 import type { Status, Tarefa } from './tipos'
+=======
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 import { agruparPorStatus, filtrarTarefas } from './derivar'
+import type { Status } from './tipos'
 import { useFiltrosStore } from './filtrosStore'
 import CartaoTarefa from './components/CartaoTarefa.vue'
 import BarraFiltros from './components/BarraFiltros.vue'
+import { useTarefas } from './composables/useTarefas'
+
+const {
+  tarefas,
+  carregando,
+  erroCarregamento,
+  erroAtualizacao,
+  buscarTarefas,
+  mudarStatusTarefa,
+} = useTarefas()
 
 const storeFiltros = useFiltrosStore()
 
+<<<<<<< HEAD
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref('')
 const erroExclusao = ref('')
 const excluindoId = ref<string | null>(null)
 
+=======
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 const rotulosStatus: Record<Status, string> = {
   'a-fazer': 'A fazer',
   'em-andamento': 'Em andamento',
@@ -23,7 +40,6 @@ const rotulosStatus: Record<Status, string> = {
   'concluida': 'Concluída',
 }
 
-// Derivado conforme os slides 14 e 17:
 // agruparPorStatus(filtrarTarefas(tarefas, filtros)) dentro do computed!
 const colunas = computed(() => {
   const filtradas = filtrarTarefas(tarefas.value, storeFiltros)
@@ -34,6 +50,7 @@ const totalFiltradas = computed(() => {
   return colunas.value.reduce((total, col) => total + col.tarefas.length, 0)
 })
 
+<<<<<<< HEAD
 async function buscarTarefas() {
   carregando.value = true
   erro.value = ''
@@ -92,6 +109,8 @@ async function excluirTarefaDoQuadro(id: string) {
   }
 }
 
+=======
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 onMounted(buscarTarefas)
 </script>
 
@@ -123,6 +142,7 @@ onMounted(buscarTarefas)
     <!-- Barra de Filtros compartilhada via Pinia -->
     <BarraFiltros />
 
+<<<<<<< HEAD
     <p v-if="erroExclusao" class="mensagem mensagem-erro" role="alert">
       {{ erroExclusao }}
     </p>
@@ -130,7 +150,20 @@ onMounted(buscarTarefas)
     <p v-if="carregando" class="mensagem" role="status">Carregando quadro...</p>
     <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">
       {{ erro }}
+=======
+    <p v-if="erroAtualizacao" class="mensagem mensagem-erro" role="alert">
+      {{ erroAtualizacao }}
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
     </p>
+    
+    <p v-if="carregando" class="mensagem" role="status">
+      Carregando quadro...
+    </p>
+    
+    <p v-else-if="erroCarregamento" class="mensagem mensagem-erro" role="alert">
+      {{ erroCarregamento }}
+    </p>
+    
     <div v-else-if="tarefas.length === 0" class="mensagem">
       Nenhuma tarefa cadastrada.
     </div>
@@ -169,11 +202,15 @@ onMounted(buscarTarefas)
               v-for="tarefa in coluna.tarefas"
               :key="tarefa.id"
               :tarefa="tarefa"
+<<<<<<< HEAD
               permitir-excluir
               :excluindo="excluindoId === tarefa.id"
               @mudar-status="mudarStatusTarefa"
               @excluir="excluirTarefaDoQuadro"
             />
+=======
+              :ao-mudar-status="mudarStatusTarefa"            />
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
           </div>
         </section>
       </div>

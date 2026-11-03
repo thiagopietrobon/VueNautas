@@ -1,25 +1,42 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+<<<<<<< HEAD
 import { atualizarTarefa, excluirTarefa, listarTarefas } from './api'
 import type { Status, Tarefa } from './tipos'
+=======
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 import { filtrarTarefas } from './derivar'
 import { useFiltrosStore } from './filtrosStore'
 import CartaoTarefa from './components/CartaoTarefa.vue'
 import BarraFiltros from './components/BarraFiltros.vue'
+import { useTarefas } from './composables/useTarefas'
+
+const {
+  tarefas,
+  carregando,
+  erroCarregamento,
+  erroAtualizacao,
+  buscarTarefas,
+  mudarStatusTarefa,
+} = useTarefas()
 
 const storeFiltros = useFiltrosStore()
 
+<<<<<<< HEAD
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref('')
 const erroExclusao = ref('')
 const excluindoId = ref<string | null>(null)
+=======
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 
 const tarefasFiltradas = computed(() => {
   return filtrarTarefas(tarefas.value, storeFiltros)
 })
 
+<<<<<<< HEAD
 async function buscarTarefas() {
   carregando.value = true
   erro.value = ''
@@ -77,6 +94,8 @@ async function excluirTarefaDaLista(id: string) {
   }
 }
 
+=======
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 onMounted(buscarTarefas)
 </script>
 
@@ -105,6 +124,7 @@ onMounted(buscarTarefas)
 
     <!-- Barra de Filtros compartilhada via Pinia -->
     <BarraFiltros />
+<<<<<<< HEAD
 
     <p v-if="erroExclusao" class="mensagem mensagem-erro" role="alert">
       {{ erroExclusao }}
@@ -113,7 +133,21 @@ onMounted(buscarTarefas)
     <p v-if="carregando" class="mensagem" role="status">Carregando tarefas...</p>
     <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">
       {{ erro }}
+=======
+    
+    <p v-if="erroAtualizacao" class="mensagem mensagem-erro" role="alert">
+      {{ erroAtualizacao }}
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
     </p>
+    
+    <p v-if="carregando" class="mensagem" role="status">
+      Carregando tarefas...
+    </p>
+    
+    <p v-else-if="erroCarregamento" class="mensagem mensagem-erro" role="alert">
+      {{ erroCarregamento }}
+    </p>
+    
     <div v-else-if="tarefas.length === 0" class="mensagem">
       Nenhuma tarefa cadastrada.
     </div>
@@ -128,11 +162,15 @@ onMounted(buscarTarefas)
         v-for="tarefa in tarefasFiltradas"
         :key="tarefa.id"
         :tarefa="tarefa"
+<<<<<<< HEAD
         permitir-excluir
         :excluindo="excluindoId === tarefa.id"
         @mudar-status="mudarStatusTarefa"
         @excluir="excluirTarefaDaLista"
       />
+=======
+        :ao-mudar-status="mudarStatusTarefa"      />
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
     </section>
   </section>
 </template>

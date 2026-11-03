@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import type { Status, Tarefa } from '../tipos'
 import { formatarData } from '../utils'
 
+<<<<<<< HEAD
 const props = withDefaults(defineProps<{
   tarefa: Tarefa
   permitirExcluir?: boolean
@@ -15,10 +17,51 @@ const emit = defineEmits<{
   (e: 'mudarStatus', id: string, novoStatus: Status): void
   (e: 'excluir', id: string): void
 }>()
+=======
+const props = defineProps<{
+  tarefa: Tarefa
+  aoMudarStatus?: (
+    id: string,
+    novoStatus: Status,
+  ) => Promise<boolean>
+}>()
 
-function aoAlterarStatus(event: Event) {
+const statusSelecionado = ref(props.tarefa.status)
+const atualizando = ref(false)
+>>>>>>> 9710f712e9041ca275f12406287499464210b4eb
+
+watch(
+  () => props.tarefa.status,
+  (novoStatus) => {
+    statusSelecionado.value = novoStatus
+  },
+)
+
+async function aoAlterarStatus(event: Event) {
   const alvo = event.target as HTMLSelectElement
-  emit('mudarStatus', alvo.dataset.id ?? '', alvo.value as Status)
+  const novoStatus = alvo.value as Status
+
+  if (!props.aoMudarStatus || atualizando.value) {
+    statusSelecionado.value = props.tarefa.status
+    return
+  }
+
+  atualizando.value = true
+
+  try {
+    const sucesso = await props.aoMudarStatus(
+      props.tarefa.id,
+      novoStatus,
+    )
+
+    if (!sucesso) {
+      statusSelecionado.value = props.tarefa.status
+    }
+  } catch {
+    statusSelecionado.value = props.tarefa.status
+  } finally {
+    atualizando.value = false
+  }
 }
 
 function aoExcluir() {
@@ -48,12 +91,13 @@ function aoExcluir() {
 
       <div class="cartao-status-controle">
         <label :for="`status-select-${tarefa.id}`" class="rotulo-status">Status:</label>
+        
         <select
           :id="`status-select-${tarefa.id}`"
-          :data-id="tarefa.id"
-          :value="tarefa.status"
+          :value="statusSelecionado"
           class="seletor-status"
           aria-label="Alterar status da tarefa"
+          :disabled="atualizando || !aoMudarStatus"
           @change="aoAlterarStatus"
         >
           <option value="a-fazer">A fazer</option>
@@ -61,6 +105,7 @@ function aoExcluir() {
           <option value="em-revisao">Em revisão</option>
           <option value="concluida">Concluída</option>
         </select>
+
       </div>
 
       <button
