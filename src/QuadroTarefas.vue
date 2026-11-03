@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { atualizarTarefa, listarTarefas } from './api'
+import { atualizarTarefa, excluirTarefa, listarTarefas } from './api'
 import type { Status, Tarefa } from './tipos'
 import { agruparPorStatus, filtrarTarefas } from './derivar'
 import { useFiltrosStore } from './filtrosStore'
@@ -13,6 +13,8 @@ const storeFiltros = useFiltrosStore()
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref('')
+const erroExclusao = ref('')
+const excluindoId = ref<string | null>(null)
 
 const rotulosStatus: Record<Status, string> = {
   'a-fazer': 'A fazer',
@@ -62,6 +64,34 @@ async function mudarStatusTarefa(id: string, novoStatus: Status) {
   }
 }
 
+async function excluirTarefaDoQuadro(id: string) {
+  const tarefa = tarefas.value.find((t) => t.id === id)
+
+  if (!tarefa) return
+
+  const confirmado = window.confirm(
+    `Excluir a tarefa "${tarefa.titulo}"? Esta ação não pode ser desfeita.`,
+  )
+
+  if (!confirmado) return
+
+  erroExclusao.value = ''
+  excluindoId.value = id
+
+  try {
+    await excluirTarefa(id)
+    tarefas.value = tarefas.value.filter((t) => t.id !== id)
+  } catch (erroExcluir) {
+    const mensagem = erroExcluir instanceof Error
+      ? erroExcluir.message
+      : 'Ocorreu um erro ao excluir a tarefa.'
+
+    erroExclusao.value = `Não foi possível excluir a tarefa. ${mensagem}`
+  } finally {
+    excluindoId.value = null
+  }
+}
+
 onMounted(buscarTarefas)
 </script>
 
@@ -93,9 +123,13 @@ onMounted(buscarTarefas)
     <!-- Barra de Filtros compartilhada via Pinia -->
     <BarraFiltros />
 
+    <p v-if="erroExclusao" class="mensagem mensagem-erro" role="alert">
+      {{ erroExclusao }}
+    </p>
+
     <p v-if="carregando" class="mensagem" role="status">Carregando quadro...</p>
     <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">
-      {{ erro }} Verifique se o json-server está rodando na porta 3000.
+      {{ erro }}
     </p>
     <div v-else-if="tarefas.length === 0" class="mensagem">
       Nenhuma tarefa cadastrada.
@@ -135,7 +169,10 @@ onMounted(buscarTarefas)
               v-for="tarefa in coluna.tarefas"
               :key="tarefa.id"
               :tarefa="tarefa"
+              permitir-excluir
+              :excluindo="excluindoId === tarefa.id"
               @mudar-status="mudarStatusTarefa"
+              @excluir="excluirTarefaDoQuadro"
             />
           </div>
         </section>

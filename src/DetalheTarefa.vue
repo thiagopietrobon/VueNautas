@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
-import { buscarTarefa as buscarTarefaApi, ErroApi } from './api'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { buscarTarefa as buscarTarefaApi, excluirTarefa, ErroApi } from './api'
 import type { Tarefa } from './tipos'
 import { formatarData } from './utils'
 
 const rota = useRoute()
+const router = useRouter()
 const tarefa = ref<Tarefa | null>(null)
 const carregando = ref(false)
 const erro = ref('')
+const erroExclusao = ref('')
+const excluindo = ref(false)
 const idTarefa = computed(() => String(rota.params.id ?? ''))
 let requisicaoAtual = 0
 
@@ -38,6 +41,32 @@ async function buscarTarefa(id: string) {
 
 watch(idTarefa, buscarTarefa, { immediate: true })
 
+async function excluirTarefaAtual() {
+  if (!tarefa.value || excluindo.value) return
+
+  const confirmado = window.confirm(
+    `Excluir a tarefa "${tarefa.value.titulo}"? Esta ação não pode ser desfeita.`,
+  )
+
+  if (!confirmado) return
+
+  erroExclusao.value = ''
+  excluindo.value = true
+
+  try {
+    await excluirTarefa(tarefa.value.id)
+    await router.push('/')
+  } catch (erroExcluir) {
+    const mensagem = erroExcluir instanceof Error
+      ? erroExcluir.message
+      : 'Ocorreu um erro ao excluir a tarefa.'
+
+    erroExclusao.value = `Não foi possível excluir a tarefa. ${mensagem}`
+  } finally {
+    excluindo.value = false
+  }
+}
+
 </script>
 
 <template>
@@ -50,8 +79,7 @@ watch(idTarefa, buscarTarefa, { immediate: true })
     </div>
 
     <p v-if="carregando" class="mensagem" role="status">Buscando tarefa...</p>
-    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">{{ erro }} Verifique se o json-server está rodando
-      na porta 3000.</p>
+    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">{{ erro }}</p>
 
     <article v-else-if="tarefa" class="painel-detalhes">
       <div class="painel-titulo">
@@ -92,12 +120,29 @@ watch(idTarefa, buscarTarefa, { immediate: true })
           <dd>{{ formatarData(tarefa.prazo) }}</dd>
         </div>
       </dl>
+      <p v-if="erroExclusao" class="mensagem mensagem-erro" role="alert">
+        {{ erroExclusao }}
+      </p>
       <RouterLink class="botao-link" :to="{ name: 'editar-tarefa', params: { id: tarefa.id } }">
         Editar tarefa
       </RouterLink>
       <RouterLink class="botao-link" :to="{ name: 'detalhe-projeto', params: { id: tarefa.projetoId } }">
         Ver projeto relacionado
       </RouterLink>
+      <button
+        type="button"
+        class="botao-perigo botao-excluir-detalhe"
+        :disabled="excluindo"
+        @click="excluirTarefaAtual"
+      >
+        {{ excluindo ? 'Excluindo...' : 'Excluir tarefa' }}
+      </button>
     </article>
   </section>
 </template>
+
+<style scoped>
+.botao-excluir-detalhe {
+  margin: 0 26px 25px;
+}
+</style>

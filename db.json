@@ -86,16 +86,6 @@
       "prioridade": "baixa",
       "responsavel": "Ana",
       "prazo": "2026-10-20"
-    },
-    {
-      "id": "6",
-      "projetoId": "3",
-      "titulo": "tarefa teste",
-      "descricao": "kafegçiuaedcoancsçab´scõanc o;asbs~pc",
-      "status": "em-andamento",
-      "prioridade": "alta",
-      "responsavel": "ADM",
-      "prazo": "2026-10-31"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

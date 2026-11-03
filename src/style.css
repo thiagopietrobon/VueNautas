@@ -513,6 +513,35 @@ h1 {
     color: var(--azul);
 }
 
+.botao-perigo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 17px;
+    border: 1px solid #e3b4b4;
+    border-radius: 10px;
+    background: #fff7f7;
+    color: #9c3333;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.botao-perigo:hover:not(:disabled) {
+    border-color: #cf8f8f;
+    background: #fdeaea;
+}
+
+.botao-perigo:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
 @media (max-width: 520px) {
     .formulario-projeto,
     .formulario-tarefa {

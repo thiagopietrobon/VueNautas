@@ -2,17 +2,27 @@
 import type { Status, Tarefa } from '../tipos'
 import { formatarData } from '../utils'
 
-defineProps<{
+const props = withDefaults(defineProps<{
   tarefa: Tarefa
-}>()
+  permitirExcluir?: boolean
+  excluindo?: boolean
+}>(), {
+  permitirExcluir: false,
+  excluindo: false,
+})
 
 const emit = defineEmits<{
   (e: 'mudarStatus', id: string, novoStatus: Status): void
+  (e: 'excluir', id: string): void
 }>()
 
 function aoAlterarStatus(event: Event) {
   const alvo = event.target as HTMLSelectElement
   emit('mudarStatus', alvo.dataset.id ?? '', alvo.value as Status)
+}
+
+function aoExcluir() {
+  emit('excluir', props.tarefa.id)
 }
 </script>
 
@@ -52,6 +62,17 @@ function aoAlterarStatus(event: Event) {
           <option value="concluida">Concluída</option>
         </select>
       </div>
+
+      <button
+        v-if="permitirExcluir"
+        type="button"
+        class="botao-excluir"
+        :disabled="excluindo"
+        :aria-label="`Excluir a tarefa ${tarefa.titulo}`"
+        @click="aoExcluir"
+      >
+        {{ excluindo ? 'Excluindo...' : 'Excluir' }}
+      </button>
     </div>
   </article>
 </template>
@@ -139,6 +160,28 @@ function aoAlterarStatus(event: Event) {
 
 .seletor-status:focus {
   border-color: var(--azul);
+}
+
+.botao-excluir {
+  padding: 5px 10px;
+  border: 1px solid #f0caca;
+  border-radius: 6px;
+  background: #fff7f7;
+  color: #9c3333;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.botao-excluir:hover:not(:disabled) {
+  border-color: #d99a9a;
+  background: #fdeaea;
+}
+
+.botao-excluir:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 @media (max-width: 420px) {
