@@ -7,6 +7,7 @@ import { useFiltrosStore } from './filtrosStore'
 import CartaoTarefa from './components/CartaoTarefa.vue'
 import BarraFiltros from './components/BarraFiltros.vue'
 import { useTarefas } from './composables/useTarefas'
+import EstadoConsulta from './components/EstadoConsulta.vue'
 
 const {
   tarefas,
@@ -79,75 +80,84 @@ onMounted(buscarTarefas)
           {{ erroAtualizacao }}
         </p>
         
-        <p v-if="carregando" class="mensagem" role="status">
-          Carregando quadro...
-        </p>
-        
-        <p v-else-if="erroCarregamento" class="mensagem mensagem-erro" role="alert">
-          {{ erroCarregamento }}
-        </p>
-        
-        <div v-else-if="tarefas.length === 0" class="mensagem">
-          Nenhuma tarefa cadastrada.
-        </div>
-        
-        <div v-else-if="totalFiltradas === 0" class="mensagem mensagem-vazia">
-          <p>Nenhuma tarefa encontrada com os filtros informados.</p>
-        
-          <button
-            type="button"
-            class="botao-secundario"
-            @click="storeFiltros.limpar"
-          >
-            Limpar filtros
-          </button>
-        </div>
-        
-        <div v-else class="recipiente-quadro">
-          <div class="grade-quadro" role="region" aria-label="Colunas por status">
-            <section
-              v-for="coluna in colunas"
-              :key="coluna.status"
-              class="coluna-quadro"
-              :data-status="coluna.status"
-              :aria-label="`Coluna ${rotulosStatus[coluna.status]}`"
-            >
-              <header class="coluna-cabecalho">
-                <div class="coluna-titulo-com-indicador">
-                  <span
-                    class="indicador-status"
-                    :data-status="coluna.status"
-                  ></span>
-        
-                  <h2>{{ rotulosStatus[coluna.status] }}</h2>
-                </div>
-        
-                <span
-                  class="coluna-contador"
-                  :aria-label="`${coluna.tarefas.length} tarefas`"
-                >
-                  {{ coluna.tarefas.length }}
-                </span>
-              </header>
-        
-              <div class="coluna-corpo">
-                <div v-if="coluna.tarefas.length === 0" class="coluna-vazia">
-                  Nenhuma tarefa
-                </div>
-        
-                <CartaoTarefa
-                  v-for="tarefa in coluna.tarefas"
-                  :key="tarefa.id"
-                  :tarefa="tarefa"
-                  permitir-excluir
-                  :excluindo="excluindoId === tarefa.id"
-                  :ao-mudar-status="mudarStatusTarefa"
-                  @excluir="removerTarefa"
-                />
-              </div>
-            </section>
+        <EstadoConsulta
+          :carregando="carregando"
+          :erro="erroCarregamento"
+          mensagem-carregamento="Carregando quadro..."
+          @tentar-novamente="buscarTarefas"
+        >
+          <div v-if="tarefas.length === 0" class="mensagem">
+            Nenhuma tarefa cadastrada.
           </div>
-        </div>
+        
+          <div
+            v-else-if="totalFiltradas === 0"
+            class="mensagem mensagem-vazia"
+          >
+            <p>Nenhuma tarefa encontrada com os filtros informados.</p>
+        
+            <button
+              type="button"
+              class="botao-secundario"
+              @click="storeFiltros.limpar"
+            >
+              Limpar filtros
+            </button>
+          </div>
+        
+          <div v-else class="recipiente-quadro">
+            <div
+              class="grade-quadro"
+              role="region"
+              aria-label="Colunas por status"
+            >
+              <section
+                v-for="coluna in colunas"
+                :key="coluna.status"
+                class="coluna-quadro"
+                :data-status="coluna.status"
+                :aria-label="`Coluna ${rotulosStatus[coluna.status]}`"
+              >
+                <header class="coluna-cabecalho">
+                  <div class="coluna-titulo-com-indicador">
+                    <span
+                      class="indicador-status"
+                      :data-status="coluna.status"
+                    ></span>
+        
+                    <h2>{{ rotulosStatus[coluna.status] }}</h2>
+                  </div>
+        
+                  <span
+                    class="coluna-contador"
+                    :aria-label="`${coluna.tarefas.length} tarefas`"
+                  >
+                    {{ coluna.tarefas.length }}
+                  </span>
+                </header>
+        
+                <div class="coluna-corpo">
+                  <div
+                    v-if="coluna.tarefas.length === 0"
+                    class="coluna-vazia"
+                  >
+                    Nenhuma tarefa
+                  </div>
+        
+                  <CartaoTarefa
+                    v-for="tarefa in coluna.tarefas"
+                    :key="tarefa.id"
+                    :tarefa="tarefa"
+                    permitir-excluir
+                    :excluindo="excluindoId === tarefa.id"
+                    :ao-mudar-status="mudarStatusTarefa"
+                    @excluir="removerTarefa"
+                  />
+                </div>
+              </section>
+            </div>
+          </div>
+        </EstadoConsulta>
   </section>
 </template>
 
