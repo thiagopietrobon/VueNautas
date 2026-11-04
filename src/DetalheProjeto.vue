@@ -4,6 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { buscarProjeto as buscarProjetoApi, ErroApi } from './api'
 import type { Projeto, Tarefa } from './tipos'
 import CartaoTarefa from './components/CartaoTarefa.vue'
+import EstadoConsulta from './components/EstadoConsulta.vue'
 import { formatarData } from './utils'
 
 const rota = useRoute()
@@ -40,6 +41,10 @@ async function buscarProjeto(id: string) {
   }
 }
 
+function tentarNovamente() {
+  buscarProjeto(idProjeto.value)
+}
+
 watch(idProjeto, buscarProjeto, { immediate: true })
 
 </script>
@@ -53,10 +58,13 @@ watch(idProjeto, buscarProjeto, { immediate: true })
       <p class="texto-introdutorio">Dados do projeto e atividades associadas a ele.</p>
     </div>
 
-    <p v-if="carregando" class="mensagem" role="status">Buscando projeto e tarefas...</p>
-    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">{{ erro }}</p>
-
-    <template v-else-if="projeto">
+    <EstadoConsulta
+      :carregando="carregando"
+      :erro="erro"
+      mensagem-carregamento="Buscando projeto e tarefas..."
+      @tentar-novamente="tentarNovamente"
+    >
+      <template v-if="projeto">
       <section class="painel-detalhes">
         <div class="painel-titulo">
           <span class="etiqueta">Projeto #{{ projeto.id }}</span>
@@ -115,6 +123,7 @@ watch(idProjeto, buscarProjeto, { immediate: true })
           <CartaoTarefa v-for="tarefa in tarefas" :key="tarefa.id" :tarefa="tarefa" />
         </div>
       </section>
-    </template>
+      </template>
+    </EstadoConsulta>
   </section>
 </template>
