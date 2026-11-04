@@ -6,6 +6,7 @@ import { useFiltrosStore } from './filtrosStore'
 import CartaoTarefa from './components/CartaoTarefa.vue'
 import BarraFiltros from './components/BarraFiltros.vue'
 import { useTarefas } from './composables/useTarefas'
+import EstadoConsulta from './components/EstadoConsulta.vue'
 
 const {
   tarefas,
@@ -62,41 +63,47 @@ onMounted(buscarTarefas)
           {{ erroAtualizacao }}
         </p>
         
-        <p v-if="carregando" class="mensagem" role="status">
-          Carregando tarefas...
-        </p>
+        <EstadoConsulta
+          :carregando="carregando"
+          :erro="erroCarregamento"
+          mensagem-carregamento="Carregando tarefas..."
+          @tentar-novamente="buscarTarefas"
+        >
+          <div v-if="tarefas.length === 0" class="mensagem">
+            Nenhuma tarefa cadastrada.
+          </div>
         
-        <p v-else-if="erroCarregamento" class="mensagem mensagem-erro" role="alert">
-          {{ erroCarregamento }}
-        </p>
-        
-        <div v-else-if="tarefas.length === 0" class="mensagem">
-          Nenhuma tarefa cadastrada.
-        </div>
-        
-        <div v-else-if="tarefasFiltradas.length === 0" class="mensagem mensagem-vazia">
-          <p>Nenhuma tarefa encontrada com os filtros informados.</p>
-        
-          <button
-            type="button"
-            class="botao-secundario"
-            @click="storeFiltros.limpar"
+          <div
+            v-else-if="tarefasFiltradas.length === 0"
+            class="mensagem mensagem-vazia"
           >
-            Limpar filtros
-          </button>
-        </div>
+            <p>Nenhuma tarefa encontrada com os filtros informados.</p>
         
-        <section v-else class="grade-cartoes" aria-label="Lista de tarefas">
-          <CartaoTarefa
-            v-for="tarefa in tarefasFiltradas"
-            :key="tarefa.id"
-            :tarefa="tarefa"
-            permitir-excluir
-            :excluindo="excluindoId === tarefa.id"
-            :ao-mudar-status="mudarStatusTarefa"
-            @excluir="removerTarefa"
-          />
-        </section>
+            <button
+              type="button"
+              class="botao-secundario"
+              @click="storeFiltros.limpar"
+            >
+              Limpar filtros
+            </button>
+          </div>
+        
+          <section
+            v-else
+            class="grade-cartoes"
+            aria-label="Lista de tarefas"
+          >
+            <CartaoTarefa
+              v-for="tarefa in tarefasFiltradas"
+              :key="tarefa.id"
+              :tarefa="tarefa"
+              permitir-excluir
+              :excluindo="excluindoId === tarefa.id"
+              :ao-mudar-status="mudarStatusTarefa"
+              @excluir="removerTarefa"
+            />
+          </section>
+        </EstadoConsulta>
   </section>
 </template>
 
