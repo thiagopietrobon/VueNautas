@@ -3,32 +3,25 @@ import { ref, watch } from 'vue'
 import type { Status, Tarefa } from '../tipos'
 import { formatarData } from '../utils'
 
-<<<<<<< HEAD
 const props = withDefaults(defineProps<{
   tarefa: Tarefa
   permitirExcluir?: boolean
   excluindo?: boolean
+  aoMudarStatus?: (
+    id: string,
+    novoStatus: Status,
+  ) => Promise<boolean>
 }>(), {
   permitirExcluir: false,
   excluindo: false,
 })
 
 const emit = defineEmits<{
-  (e: 'mudarStatus', id: string, novoStatus: Status): void
   (e: 'excluir', id: string): void
-}>()
-=======
-const props = defineProps<{
-  tarefa: Tarefa
-  aoMudarStatus?: (
-    id: string,
-    novoStatus: Status,
-  ) => Promise<boolean>
 }>()
 
 const statusSelecionado = ref(props.tarefa.status)
 const atualizando = ref(false)
->>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 
 watch(
   () => props.tarefa.status,
