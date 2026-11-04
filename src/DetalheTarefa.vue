@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { buscarTarefa as buscarTarefaApi, excluirTarefa, ErroApi } from './api'
+import EstadoConsulta from './components/EstadoConsulta.vue'
 import type { Tarefa } from './tipos'
 import { formatarData } from './utils'
 
@@ -37,6 +38,10 @@ async function buscarTarefa(id: string) {
   } finally {
     if (numeroRequisicao === requisicaoAtual) carregando.value = false
   }
+}
+
+function tentarNovamente() {
+  buscarTarefa(idTarefa.value)
 }
 
 watch(idTarefa, buscarTarefa, { immediate: true })
@@ -78,10 +83,13 @@ async function excluirTarefaAtual() {
       <p class="texto-introdutorio">Todas as informações cadastradas para esta atividade.</p>
     </div>
 
-    <p v-if="carregando" class="mensagem" role="status">Buscando tarefa...</p>
-    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">{{ erro }}</p>
-
-    <article v-else-if="tarefa" class="painel-detalhes">
+    <EstadoConsulta
+      :carregando="carregando"
+      :erro="erro"
+      mensagem-carregamento="Buscando tarefa..."
+      @tentar-novamente="tentarNovamente"
+    >
+      <article v-if="tarefa" class="painel-detalhes">
       <div class="painel-titulo">
         <span class="etiqueta">Tarefa #{{ tarefa.id }}</span>
         <h2>{{ tarefa.titulo }}</h2>
@@ -138,6 +146,7 @@ async function excluirTarefaAtual() {
         {{ excluindo ? 'Excluindo...' : 'Excluir tarefa' }}
       </button>
     </article>
+    </EstadoConsulta>
   </section>
 </template>
 
