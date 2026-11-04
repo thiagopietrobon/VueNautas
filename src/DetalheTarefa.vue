@@ -71,16 +71,20 @@ async function excluirTarefaAtual() {
     excluindo.value = false
   }
 }
-
 </script>
 
 <template>
   <section class="pagina pagina-detalhe">
-    <RouterLink class="link-voltar" to="/">← Voltar para tarefas</RouterLink>
+    <RouterLink class="link-voltar" to="/">
+      ← Voltar para tarefas
+    </RouterLink>
+
     <div class="titulo-pagina">
       <p class="sobretitulo">DETALHES</p>
       <h1>Detalhe da tarefa</h1>
-      <p class="texto-introdutorio">Todas as informações cadastradas para esta atividade.</p>
+      <p class="texto-introdutorio">
+        Todas as informações cadastradas para esta atividade.
+      </p>
     </div>
 
     <EstadoConsulta
@@ -90,67 +94,120 @@ async function excluirTarefaAtual() {
       @tentar-novamente="tentarNovamente"
     >
       <article v-if="tarefa" class="painel-detalhes">
-      <div class="painel-titulo">
-        <span class="etiqueta">Tarefa #{{ tarefa.id }}</span>
-        <h2>{{ tarefa.titulo }}</h2>
-      </div>
-      <dl class="lista-detalhes">
-        <div class="item-detalhe">
-          <dt>ID</dt>
-          <dd>{{ tarefa.id }}</dd>
+        <div class="painel-titulo">
+          <span class="etiqueta">Tarefa #{{ tarefa.id }}</span>
+          <h2>{{ tarefa.titulo }}</h2>
         </div>
-        <div class="item-detalhe">
-          <dt>ID do projeto</dt>
-          <dd>{{ tarefa.projetoId }}</dd>
-        </div>
-        <div class="item-detalhe item-detalhe-largo">
-          <dt>Título</dt>
-          <dd>{{ tarefa.titulo }}</dd>
-        </div>
-        <div class="item-detalhe item-detalhe-largo">
-          <dt>Descrição</dt>
-          <dd>{{ tarefa.descricao || 'Não informada' }}</dd>
-        </div>
-        <div class="item-detalhe">
-          <dt>Status</dt>
-          <dd>{{ tarefa.status }}</dd>
-        </div>
-        <div class="item-detalhe">
-          <dt>Prioridade</dt>
-          <dd>{{ tarefa.prioridade }}</dd>
-        </div>
-        <div class="item-detalhe">
-          <dt>Responsável</dt>
-          <dd>{{ tarefa.responsavel || 'Não informado' }}</dd>
-        </div>
-        <div class="item-detalhe">
-          <dt>Prazo</dt>
-          <dd>{{ formatarData(tarefa.prazo) }}</dd>
-        </div>
-      </dl>
-      <p v-if="erroExclusao" class="mensagem mensagem-erro" role="alert">
-        {{ erroExclusao }}
-      </p>
-      <RouterLink class="botao-link" :to="{ name: 'editar-tarefa', params: { id: tarefa.id } }">
-        Editar tarefa
-      </RouterLink>
-      <RouterLink class="botao-link" :to="{ name: 'detalhe-projeto', params: { id: tarefa.projetoId } }">
-        Ver projeto relacionado
-      </RouterLink>
-      <button
-        type="button"
-        class="botao-perigo botao-excluir-detalhe"
-        :disabled="excluindo"
-        @click="excluirTarefaAtual"
-      >
-        {{ excluindo ? 'Excluindo...' : 'Excluir tarefa' }}
-      </button>
-    </article>
+
+        <dl class="lista-detalhes">
+          <div class="item-detalhe">
+            <dt>ID</dt>
+            <dd>{{ tarefa.id }}</dd>
+          </div>
+
+          <div class="item-detalhe">
+            <dt>ID do projeto</dt>
+            <dd>{{ tarefa.projetoId }}</dd>
+          </div>
+
+          <div class="item-detalhe item-detalhe-largo">
+            <dt>Título</dt>
+            <dd>{{ tarefa.titulo }}</dd>
+          </div>
+
+          <div class="item-detalhe item-detalhe-largo">
+            <dt>Descrição</dt>
+            <dd>{{ tarefa.descricao || 'Não informada' }}</dd>
+          </div>
+
+          <div class="item-detalhe">
+            <dt>Status</dt>
+            <dd>{{ tarefa.status }}</dd>
+          </div>
+
+          <div class="item-detalhe">
+            <dt>Prioridade</dt>
+            <dd>{{ tarefa.prioridade }}</dd>
+          </div>
+
+          <div class="item-detalhe">
+            <dt>Responsável</dt>
+            <dd>{{ tarefa.responsavel || 'Não informado' }}</dd>
+          </div>
+
+          <div class="item-detalhe">
+            <dt>Prazo</dt>
+            <dd>{{ formatarData(tarefa.prazo) }}</dd>
+          </div>
+        </dl>
+
+        <section
+          v-if="erroExclusao"
+          class="aviso-erro-operacao"
+          role="alert"
+        >
+          <span class="icone-alerta" aria-hidden="true">⚠</span>
+          <p>{{ erroExclusao }}</p>
+        </section>
+
+        <RouterLink
+          class="botao-link"
+          :to="{ name: 'editar-tarefa', params: { id: tarefa.id } }"
+        >
+          Editar tarefa
+        </RouterLink>
+
+        <RouterLink
+          class="botao-link"
+          :to="{ name: 'detalhe-projeto', params: { id: tarefa.projetoId } }"
+        >
+          Ver projeto relacionado
+        </RouterLink>
+
+        <button
+          type="button"
+          class="botao-perigo botao-excluir-detalhe"
+          :disabled="excluindo"
+          @click="excluirTarefaAtual"
+        >
+          {{ excluindo ? 'Excluindo...' : 'Excluir tarefa' }}
+        </button>
+      </article>
     </EstadoConsulta>
   </section>
 </template>
 
 <style scoped>
+.aviso-erro-operacao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 16px 26px;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+  border-radius: 12px;
+  color: #b42318;
+}
+
+.aviso-erro-operacao p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.icone-alerta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fee4e2;
+  font-size: 16px;
+}
+
 .botao-excluir-detalhe {
   margin: 0 26px 25px;
 }
