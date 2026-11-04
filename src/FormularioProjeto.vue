@@ -6,6 +6,7 @@ import {
   criarProjeto,
   atualizarProjeto,
 } from './api'
+import EstadoConsulta from './components/EstadoConsulta.vue'
 
 const rota = useRoute()
 const router = useRouter()
@@ -139,7 +140,7 @@ function validarCampo(campo: keyof typeof erros.value) {
 
 async function salvarProjeto() {
   if (salvando.value) return
-  
+
   erro.value = ''
 
   if (!validarFormulario()) {
@@ -169,8 +170,8 @@ async function salvarProjeto() {
       )
 
       await router.push({
-      name: 'detalhe-projeto',
-      params: { id: idProjeto.value },
+        name: 'detalhe-projeto',
+        params: { id: idProjeto.value },
       })
     } else {
       await criarProjeto(dadosProjeto)
@@ -205,39 +206,28 @@ async function salvarProjeto() {
       </h1>
     </div>
 
-    <p v-if="carregando"  class="mensagem" role="status">
-      Carregando dados do formulário...
-    </p>
-
-    <section
-      v-else-if="erroCarregamento"
-      class="mensagem mensagem-erro"
-      role="alert"
+    <EstadoConsulta
+      :carregando="carregando"
+      :erro="erroCarregamento ? erro : ''"
+      mensagem-carregamento="Carregando dados do formulário..."
+      @tentar-novamente="carregarFormulario"
     >
-      <p>{{ erro }}</p>
+      <form
+        ref="formularioRef"
+        class="formulario-projeto"
+        aria-labelledby="titulo-formulario-projeto"
+        novalidate
+        @submit.prevent="salvarProjeto"
+      >
+        <p id="projeto-campos-obrigatorios" class="texto-ajuda">
+          Os campos marcados com * são obrigatórios.
+        </p>
 
-      <RouterLink class="botao-secundario" :to="{ name: 'projetos' }">
-        Voltar para projetos
-      </RouterLink>
-    </section>
+        <p v-if="erro" class="mensagem mensagem-erro" role="alert">
+          {{ erro }}
+        </p>
 
-    <form
-      v-else
-      ref="formularioRef"
-      class="formulario-projeto"
-      aria-labelledby="titulo-formulario-projeto"
-      novalidate
-      @submit.prevent="salvarProjeto"
-    >
-      <p id="projeto-campos-obrigatorios" class="texto-ajuda">
-        Os campos marcados com * são obrigatórios.
-      </p>
-
-      <p v-if="erro" class="mensagem mensagem-erro" role="alert">
-        {{ erro }}
-      </p>
-
-      <div class="formulario-campo">
+        <div class="formulario-campo">
           <label for="nome">Nome do projeto *</label>
           <input
             id="nome"
@@ -252,7 +242,7 @@ async function salvarProjeto() {
             @input="validarCampo('nome')"
             @blur="validarCampo('nome')"
           />
-          
+
           <small
             v-if="erros.nome"
             id="erro-nome"
@@ -261,9 +251,9 @@ async function salvarProjeto() {
           >
             {{ erros.nome }}
           </small>
-      </div>
+        </div>
 
-      <div class="formulario-campo">
+        <div class="formulario-campo">
           <label for="descricao">Descrição *</label>
           <textarea
             id="descricao"
@@ -286,9 +276,9 @@ async function salvarProjeto() {
           >
             {{ erros.descricao }}
           </small>
-      </div>
+        </div>
 
-      <div class="formulario-campo">
+        <div class="formulario-campo">
           <label for="disciplina">Disciplina *</label>
           <input
             id="disciplina"
@@ -303,7 +293,7 @@ async function salvarProjeto() {
             @input="validarCampo('disciplina')"
             @blur="validarCampo('disciplina')"
           />
-          
+
           <small
             v-if="erros.disciplina"
             id="erro-disciplina"
@@ -312,28 +302,33 @@ async function salvarProjeto() {
           >
             {{ erros.disciplina }}
           </small>
-      </div>
+        </div>
 
-      <div class="formulario-acoes">
-        <button type="submit" class="botao" :disabled="salvando">
-          {{ 
-            salvando 
-              ? 'Salvando...' 
-              : modoEdicao
-                ? 'Salvar alterações'
-                : 'Salvar projeto'
-          }}
-        </button>
+        <div class="formulario-acoes">
+          <button
+            type="submit"
+            class="botao"
+            :disabled="salvando"
+          >
+            {{
+              salvando
+                ? 'Salvando...'
+                : modoEdicao
+                  ? 'Salvar alterações'
+                  : 'Salvar projeto'
+            }}
+          </button>
 
-        <RouterLink
-          class="botao-secundario"
-          :to="modoEdicao
-            ? { name: 'detalhe-projeto', params: { id: idProjeto } }
-            : '/projetos'"
-        >
-          Cancelar
-        </RouterLink>
-      </div>
-    </form>
+          <RouterLink
+            class="botao-secundario"
+            :to="modoEdicao
+              ? { name: 'detalhe-projeto', params: { id: idProjeto } }
+              : '/projetos'"
+          >
+            Cancelar
+          </RouterLink>
+        </div>
+      </form>
+    </EstadoConsulta>
   </section>
 </template>
