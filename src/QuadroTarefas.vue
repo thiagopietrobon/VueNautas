@@ -59,7 +59,13 @@ onMounted(buscarTarefas)
           <RouterLink to="/" class="aba-visao" role="tab" aria-selected="false">
             📋 Lista
           </RouterLink>
-          <RouterLink to="/quadro" class="aba-visao ativa" role="tab" aria-selected="true">
+
+          <RouterLink
+            to="/quadro"
+            class="aba-visao ativa"
+            role="tab"
+            aria-selected="true"
+          >
             📊 Quadro
           </RouterLink>
         </div>
@@ -70,94 +76,104 @@ onMounted(buscarTarefas)
       </div>
     </div>
 
-    <!-- Barra de Filtros compartilhada via Pinia -->
     <BarraFiltros />
-        <p v-if="erroExclusao" class="mensagem mensagem-erro" role="alert">
-          {{ erroExclusao }}
-        </p>
-        
-        <p v-if="erroAtualizacao" class="mensagem mensagem-erro" role="alert">
-          {{ erroAtualizacao }}
-        </p>
-        
-        <EstadoConsulta
-          :carregando="carregando"
-          :erro="erroCarregamento"
-          mensagem-carregamento="Carregando quadro..."
-          @tentar-novamente="buscarTarefas"
+
+    <section
+      v-if="erroExclusao"
+      class="aviso-erro-operacao"
+      role="alert"
+    >
+      <span class="icone-alerta" aria-hidden="true">⚠</span>
+      <p>{{ erroExclusao }}</p>
+    </section>
+
+    <section
+      v-if="erroAtualizacao"
+      class="aviso-erro-operacao"
+      role="alert"
+    >
+      <span class="icone-alerta" aria-hidden="true">⚠</span>
+      <p>{{ erroAtualizacao }}</p>
+    </section>
+
+    <EstadoConsulta
+      :carregando="carregando"
+      :erro="erroCarregamento"
+      mensagem-carregamento="Carregando quadro..."
+      @tentar-novamente="buscarTarefas"
+    >
+      <div v-if="tarefas.length === 0" class="mensagem">
+        Nenhuma tarefa cadastrada.
+      </div>
+
+      <div
+        v-else-if="totalFiltradas === 0"
+        class="mensagem mensagem-vazia"
+      >
+        <p>Nenhuma tarefa encontrada com os filtros informados.</p>
+
+        <button
+          type="button"
+          class="botao-secundario"
+          @click="storeFiltros.limpar"
         >
-          <div v-if="tarefas.length === 0" class="mensagem">
-            Nenhuma tarefa cadastrada.
-          </div>
-        
-          <div
-            v-else-if="totalFiltradas === 0"
-            class="mensagem mensagem-vazia"
+          Limpar filtros
+        </button>
+      </div>
+
+      <div v-else class="recipiente-quadro">
+        <div
+          class="grade-quadro"
+          role="region"
+          aria-label="Colunas por status"
+        >
+          <section
+            v-for="coluna in colunas"
+            :key="coluna.status"
+            class="coluna-quadro"
+            :data-status="coluna.status"
+            :aria-label="`Coluna ${rotulosStatus[coluna.status]}`"
           >
-            <p>Nenhuma tarefa encontrada com os filtros informados.</p>
-        
-            <button
-              type="button"
-              class="botao-secundario"
-              @click="storeFiltros.limpar"
-            >
-              Limpar filtros
-            </button>
-          </div>
-        
-          <div v-else class="recipiente-quadro">
-            <div
-              class="grade-quadro"
-              role="region"
-              aria-label="Colunas por status"
-            >
-              <section
-                v-for="coluna in colunas"
-                :key="coluna.status"
-                class="coluna-quadro"
-                :data-status="coluna.status"
-                :aria-label="`Coluna ${rotulosStatus[coluna.status]}`"
+            <header class="coluna-cabecalho">
+              <div class="coluna-titulo-com-indicador">
+                <span
+                  class="indicador-status"
+                  :data-status="coluna.status"
+                ></span>
+
+                <h2>{{ rotulosStatus[coluna.status] }}</h2>
+              </div>
+
+              <span
+                class="coluna-contador"
+                :aria-label="`${coluna.tarefas.length} tarefas`"
               >
-                <header class="coluna-cabecalho">
-                  <div class="coluna-titulo-com-indicador">
-                    <span
-                      class="indicador-status"
-                      :data-status="coluna.status"
-                    ></span>
-        
-                    <h2>{{ rotulosStatus[coluna.status] }}</h2>
-                  </div>
-        
-                  <span
-                    class="coluna-contador"
-                    :aria-label="`${coluna.tarefas.length} tarefas`"
-                  >
-                    {{ coluna.tarefas.length }}
-                  </span>
-                </header>
-        
-                <div class="coluna-corpo">
-                  <div
-                    v-if="coluna.tarefas.length === 0"
-                    class="coluna-vazia"
-                  >
-                    Nenhuma tarefa
-                  </div>
-        
-                  <CartaoTarefa
-                    v-for="tarefa in coluna.tarefas"
-                    :key="tarefa.id"
-                    :tarefa="tarefa"
-                    permitir-excluir
-                    :excluindo="excluindoId === tarefa.id"
-                    :ao-mudar-status="mudarStatusTarefa"
-                    @excluir="removerTarefa"
-                  />
-                </div>
-              </section>
+                {{ coluna.tarefas.length }}
+              </span>
+            </header>
+
+            <div class="coluna-corpo">
+              <div
+                v-if="coluna.tarefas.length === 0"
+                class="coluna-vazia"
+              >
+                Nenhuma tarefa
+              </div>
+
+              <CartaoTarefa
+                v-for="tarefa in coluna.tarefas"
+                :key="tarefa.id"
+                :tarefa="tarefa"
+                permitir-excluir
+                :excluindo="excluindoId === tarefa.id"
+                :ao-mudar-status="mudarStatusTarefa"
+                @excluir="removerTarefa"
+              />
             </div>
-          </div>
-        </EstadoConsulta>
+          </section>
+        </div>
+      </div>
+    </EstadoConsulta>
   </section>
 </template>
 
@@ -193,6 +209,36 @@ onMounted(buscarTarefas)
   background: var(--branco);
   color: var(--azul);
   box-shadow: 0 2px 8px rgb(20 47 75 / 8%);
+}
+
+.aviso-erro-operacao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+  border-radius: 12px;
+  color: #b42318;
+}
+
+.aviso-erro-operacao p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.icone-alerta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fee4e2;
+  font-size: 16px;
 }
 
 .mensagem-vazia {
