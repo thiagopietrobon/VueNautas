@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-<<<<<<< HEAD
-import { atualizarTarefa, excluirTarefa, listarTarefas } from './api'
-import type { Status, Tarefa } from './tipos'
-=======
->>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 import { agruparPorStatus, filtrarTarefas } from './derivar'
 import type { Status } from './tipos'
 import { useFiltrosStore } from './filtrosStore'
@@ -18,21 +13,15 @@ const {
   carregando,
   erroCarregamento,
   erroAtualizacao,
+  erroExclusao,
+  excluindoId,
   buscarTarefas,
   mudarStatusTarefa,
+  removerTarefa,
 } = useTarefas()
 
 const storeFiltros = useFiltrosStore()
 
-<<<<<<< HEAD
-const tarefas = ref<Tarefa[]>([])
-const carregando = ref(true)
-const erro = ref('')
-const erroExclusao = ref('')
-const excluindoId = ref<string | null>(null)
-
-=======
->>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 const rotulosStatus: Record<Status, string> = {
   'a-fazer': 'A fazer',
   'em-andamento': 'Em andamento',
@@ -40,77 +29,18 @@ const rotulosStatus: Record<Status, string> = {
   'concluida': 'Concluída',
 }
 
-// agruparPorStatus(filtrarTarefas(tarefas, filtros)) dentro do computed!
 const colunas = computed(() => {
   const filtradas = filtrarTarefas(tarefas.value, storeFiltros)
   return agruparPorStatus(filtradas)
 })
 
 const totalFiltradas = computed(() => {
-  return colunas.value.reduce((total, col) => total + col.tarefas.length, 0)
+  return colunas.value.reduce(
+    (total, coluna) => total + coluna.tarefas.length,
+    0,
+  )
 })
 
-<<<<<<< HEAD
-async function buscarTarefas() {
-  carregando.value = true
-  erro.value = ''
-
-  try {
-    tarefas.value = await listarTarefas()
-  } catch (erroBusca) {
-    erro.value = erroBusca instanceof Error
-      ? erroBusca.message
-      : 'Ocorreu um erro ao carregar as tarefas.'
-  } finally {
-    carregando.value = false
-  }
-}
-
-// Mudar o status grava com PATCH e substitui o objeto no array (Slide 20)
-async function mudarStatusTarefa(id: string, novoStatus: Status) {
-  try {
-    const atualizada = await atualizarTarefa(id, { status: novoStatus })
-    const index = tarefas.value.findIndex((t) => t.id === id)
-    if (index !== -1) {
-      tarefas.value[index] = atualizada
-    }
-  } catch (erroStatus) {
-    erro.value = erroStatus instanceof Error
-      ? erroStatus.message
-      : 'Não foi possível atualizar o status da tarefa.'
-  }
-}
-
-async function excluirTarefaDoQuadro(id: string) {
-  const tarefa = tarefas.value.find((t) => t.id === id)
-
-  if (!tarefa) return
-
-  const confirmado = window.confirm(
-    `Excluir a tarefa "${tarefa.titulo}"? Esta ação não pode ser desfeita.`,
-  )
-
-  if (!confirmado) return
-
-  erroExclusao.value = ''
-  excluindoId.value = id
-
-  try {
-    await excluirTarefa(id)
-    tarefas.value = tarefas.value.filter((t) => t.id !== id)
-  } catch (erroExcluir) {
-    const mensagem = erroExcluir instanceof Error
-      ? erroExcluir.message
-      : 'Ocorreu um erro ao excluir a tarefa.'
-
-    erroExclusao.value = `Não foi possível excluir a tarefa. ${mensagem}`
-  } finally {
-    excluindoId.value = null
-  }
-}
-
-=======
->>>>>>> 9710f712e9041ca275f12406287499464210b4eb
 onMounted(buscarTarefas)
 </script>
 
@@ -141,80 +71,83 @@ onMounted(buscarTarefas)
 
     <!-- Barra de Filtros compartilhada via Pinia -->
     <BarraFiltros />
-
-<<<<<<< HEAD
-    <p v-if="erroExclusao" class="mensagem mensagem-erro" role="alert">
-      {{ erroExclusao }}
-    </p>
-
-    <p v-if="carregando" class="mensagem" role="status">Carregando quadro...</p>
-    <p v-else-if="erro" class="mensagem mensagem-erro" role="alert">
-      {{ erro }}
-=======
-    <p v-if="erroAtualizacao" class="mensagem mensagem-erro" role="alert">
-      {{ erroAtualizacao }}
->>>>>>> 9710f712e9041ca275f12406287499464210b4eb
-    </p>
-    
-    <p v-if="carregando" class="mensagem" role="status">
-      Carregando quadro...
-    </p>
-    
-    <p v-else-if="erroCarregamento" class="mensagem mensagem-erro" role="alert">
-      {{ erroCarregamento }}
-    </p>
-    
-    <div v-else-if="tarefas.length === 0" class="mensagem">
-      Nenhuma tarefa cadastrada.
-    </div>
-    <div v-else-if="totalFiltradas === 0" class="mensagem mensagem-vazia">
-      <p>Nenhuma tarefa encontrada com os filtros informados.</p>
-      <button type="button" class="botao-secundario" @click="storeFiltros.limpar">
-        Limpar filtros
-      </button>
-    </div>
-
-    <!-- Quadro com uma coluna por status e id como chave (Slide 21) -->
-    <div v-else class="recipiente-quadro">
-      <div class="grade-quadro" role="region" aria-label="Colunas por status">
-        <section
-          v-for="coluna in colunas"
-          :key="coluna.status"
-          class="coluna-quadro"
-          :data-status="coluna.status"
-          :aria-label="`Coluna ${rotulosStatus[coluna.status]}`"
-        >
-          <header class="coluna-cabecalho">
-            <div class="coluna-titulo-com-indicador">
-              <span class="indicador-status" :data-status="coluna.status"></span>
-              <h2>{{ rotulosStatus[coluna.status] }}</h2>
-            </div>
-            <span class="coluna-contador" :aria-label="`${coluna.tarefas.length} tarefas`">
-              {{ coluna.tarefas.length }}
-            </span>
-          </header>
-
-          <div class="coluna-corpo">
-            <div v-if="coluna.tarefas.length === 0" class="coluna-vazia">
-              Nenhuma tarefa
-            </div>
-            <CartaoTarefa
-              v-for="tarefa in coluna.tarefas"
-              :key="tarefa.id"
-              :tarefa="tarefa"
-<<<<<<< HEAD
-              permitir-excluir
-              :excluindo="excluindoId === tarefa.id"
-              @mudar-status="mudarStatusTarefa"
-              @excluir="excluirTarefaDoQuadro"
-            />
-=======
-              :ao-mudar-status="mudarStatusTarefa"            />
->>>>>>> 9710f712e9041ca275f12406287499464210b4eb
+        <p v-if="erroExclusao" class="mensagem mensagem-erro" role="alert">
+          {{ erroExclusao }}
+        </p>
+        
+        <p v-if="erroAtualizacao" class="mensagem mensagem-erro" role="alert">
+          {{ erroAtualizacao }}
+        </p>
+        
+        <p v-if="carregando" class="mensagem" role="status">
+          Carregando quadro...
+        </p>
+        
+        <p v-else-if="erroCarregamento" class="mensagem mensagem-erro" role="alert">
+          {{ erroCarregamento }}
+        </p>
+        
+        <div v-else-if="tarefas.length === 0" class="mensagem">
+          Nenhuma tarefa cadastrada.
+        </div>
+        
+        <div v-else-if="totalFiltradas === 0" class="mensagem mensagem-vazia">
+          <p>Nenhuma tarefa encontrada com os filtros informados.</p>
+        
+          <button
+            type="button"
+            class="botao-secundario"
+            @click="storeFiltros.limpar"
+          >
+            Limpar filtros
+          </button>
+        </div>
+        
+        <div v-else class="recipiente-quadro">
+          <div class="grade-quadro" role="region" aria-label="Colunas por status">
+            <section
+              v-for="coluna in colunas"
+              :key="coluna.status"
+              class="coluna-quadro"
+              :data-status="coluna.status"
+              :aria-label="`Coluna ${rotulosStatus[coluna.status]}`"
+            >
+              <header class="coluna-cabecalho">
+                <div class="coluna-titulo-com-indicador">
+                  <span
+                    class="indicador-status"
+                    :data-status="coluna.status"
+                  ></span>
+        
+                  <h2>{{ rotulosStatus[coluna.status] }}</h2>
+                </div>
+        
+                <span
+                  class="coluna-contador"
+                  :aria-label="`${coluna.tarefas.length} tarefas`"
+                >
+                  {{ coluna.tarefas.length }}
+                </span>
+              </header>
+        
+              <div class="coluna-corpo">
+                <div v-if="coluna.tarefas.length === 0" class="coluna-vazia">
+                  Nenhuma tarefa
+                </div>
+        
+                <CartaoTarefa
+                  v-for="tarefa in coluna.tarefas"
+                  :key="tarefa.id"
+                  :tarefa="tarefa"
+                  permitir-excluir
+                  :excluindo="excluindoId === tarefa.id"
+                  :ao-mudar-status="mudarStatusTarefa"
+                  @excluir="removerTarefa"
+                />
+              </div>
+            </section>
           </div>
-        </section>
-      </div>
-    </div>
+        </div>
   </section>
 </template>
 
