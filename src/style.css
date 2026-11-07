@@ -27,6 +27,7 @@
 
     --cor-primaria: #42b883;
     --cor-primaria-hover: #369b6d;
+    --cor-primaria-texto: #163b2b;
     --cor-primaria-suave: #e2f4e9;
 
     --cor-secundaria: #387a58;
@@ -552,88 +553,141 @@ h1 {
     margin-top: 28px;
 }
 
+/* ========================================
+   SISTEMA DE BOTÕES
+======================================== */
+
+/* Botão principal */
 .botao {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+
     padding: 11px 17px;
-    border: 1px solid var(--azul);
+
+    border: 1px solid var(--cor-primaria);
     border-radius: 10px;
-    background: var(--azul);
-    color: var(--branco);
-    font-weight: 700;
+
+    background: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+
     font-size: 14px;
+    font-weight: 700;
     text-decoration: none;
+
     cursor: pointer;
+
     transition:
-        background 0.15s ease,
-        border-color 0.15s ease,
-        transform 0.15s ease;
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.botao:hover {
-    border-color: var(--azul-escuro);
-    background: var(--azul-escuro);
+.botao:hover:not(:disabled) {
+    border-color: var(--cor-primaria-hover);
+    background: var(--cor-primaria-hover);
+    transform: translateY(-1px);
 }
 
-.botao:focus-visible {
-    outline: 3px solid rgb(37 99 166 / 25%);
-    outline-offset: 3px;
+.botao:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .botao:disabled {
-    opacity: 0.65;
+    opacity: 0.55;
     cursor: not-allowed;
+    transform: none;
 }
 
+/* Botão secundário */
 .botao-secundario {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+
     padding: 11px 17px;
-    border: 1px solid var(--borda);
+
+    border: 1px solid var(--cor-borda);
     border-radius: 10px;
-    background: var(--branco);
-    color: var(--texto-suave);
+
+    background: var(--cor-superficie);
+    color: var(--cor-texto-secundario);
+
     font-size: 14px;
     font-weight: 700;
     text-decoration: none;
+
     cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.botao-secundario:hover {
-    background: var(--azul-claro);
-    color: var(--azul);
+.botao-secundario:hover:not(:disabled) {
+    border-color: var(--cor-primaria);
+    background: var(--cor-primaria-suave);
+    color: var(--cor-texto);
+    transform: translateY(-1px);
 }
 
+.botao-secundario:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.botao-secundario:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Botão de ação perigosa */
 .botao-perigo {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+
     padding: 11px 17px;
-    border: 1px solid #e3b4b4;
+
+    border: 1px solid var(--cor-erro-borda);
     border-radius: 10px;
-    background: #fff7f7;
-    color: #9c3333;
+
+    background: var(--cor-erro-fundo);
+    color: var(--cor-erro);
+
     font-size: 14px;
     font-weight: 700;
     text-decoration: none;
+
     cursor: pointer;
+
     transition:
-        background 0.15s ease,
-        border-color 0.15s ease;
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .botao-perigo:hover:not(:disabled) {
-    border-color: #cf8f8f;
-    background: #fdeaea;
+    border-color: var(--cor-erro);
+    background: var(--cor-erro-borda);
+    transform: translateY(-1px);
+}
+
+.botao-perigo:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .botao-perigo:disabled {
-    opacity: 0.65;
+    opacity: 0.55;
     cursor: not-allowed;
+    transform: none;
 }
 
 @media (max-width: 520px) {
@@ -659,7 +713,7 @@ button:focus-visible,
 .formulario-campo input:focus-visible,
 .formulario-campo select:focus-visible,
 .formulario-campo textarea:focus-visible {
-    outline: 3px solid #174f87;
+    outline: 3px solid var(--cor-foco);
     outline-offset: 3px;
 }
 
