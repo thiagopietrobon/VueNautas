@@ -689,3 +689,170 @@ button:focus-visible,
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ========================================
+   IDENTIDADE VISUAL VUENAUTAS
+======================================== */
+
+.cabecalho {
+    background: var(--cor-superficie);
+    border-bottom: 1px solid var(--cor-borda);
+    box-shadow: var(--sombra-cabecalho);
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.cabecalho-conteudo {
+    min-height: 82px;
+}
+
+.marca {
+    gap: 12px;
+    color: var(--cor-texto);
+    transition: color 0.2s ease;
+}
+
+.marca:hover {
+    text-decoration: none;
+}
+
+.marca-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.marca-texto strong {
+    font-family: Manrope, sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.marca-texto small {
+    color: var(--cor-texto-secundario);
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* Área de navegação e controle de tema */
+
+.cabecalho-acoes {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.navegacao {
+    gap: 6px;
+}
+
+.link-nav {
+    color: var(--cor-texto-secundario);
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+.link-nav:hover,
+.link-nav.ativo {
+    color: var(--cor-primaria);
+    background: var(--cor-primaria-suave);
+}
+
+/* Botão de alternância */
+
+.controle-tema {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 40px;
+    padding: 8px 13px;
+
+    border: 1px solid var(--cor-borda);
+    border-radius: 999px;
+
+    background: var(--cor-superficie-secundaria);
+    color: var(--cor-texto);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.controle-tema span:first-child {
+    color: var(--cor-primaria);
+    font-size: 17px;
+    line-height: 1;
+}
+
+.controle-tema:hover {
+    border-color: var(--cor-primaria);
+    background: var(--cor-primaria-suave);
+    transform: translateY(-1px);
+}
+
+.controle-tema:focus-visible {
+    outline: 3px solid var(--cor-foco);
+    outline-offset: 3px;
+}
+
+/* Responsividade do cabeçalho */
+
+@media (max-width: 700px) {
+    .cabecalho-conteudo {
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 12px 0;
+    }
+
+    .cabecalho-acoes {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .marca-texto strong {
+        font-size: 15px;
+    }
+
+    .marca-texto small {
+        font-size: 9px;
+    }
+
+    .navegacao {
+        flex: 1;
+    }
+
+    .controle-tema {
+        flex-shrink: 0;
+    }
+}
+
+@media (max-width: 420px) {
+    .cabecalho-conteudo {
+        align-items: stretch;
+    }
+
+    .cabecalho-acoes {
+        align-items: center;
+    }
+
+    .controle-tema {
+        padding: 8px 10px;
+    }
+
+    .controle-tema-texto {
+        font-size: 12px;
+    }
+}
