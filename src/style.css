@@ -2,20 +2,114 @@
 
 :root {
     font-family: "DM Sans", Arial, sans-serif;
-    color: #1d2b3a;
-    background: #f4f7fb;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-optical-sizing: auto;
     font-weight: 400;
-    --azul-escuro: #15304b;
-    --azul: #2563a6;
-    --azul-claro: #eaf2fb;
-    --texto-suave: #66778a;
-    --borda: #e0e7ef;
-    --branco: #ffffff;
+
+    color-scheme: light;
+
+    /* Identidade VueNautas */
+    --vue-verde: #42b883;
+    --vue-verde-claro: #65d6a0;
+    --vue-azul-cinza: #35495e;
+
+    /* Cores semânticas */
+    --cor-fundo: #f1f5ec;
+    --cor-superficie: #ffffff;
+    --cor-superficie-secundaria: #e8efe5;
+
+    --cor-texto: #263a32;
+    --cor-texto-secundario: #64776c;
+    --cor-texto-suave: #7c8d83;
+
+    --cor-primaria: #42b883;
+    --cor-primaria-hover: #369b6d;
+    --cor-primaria-suave: #e2f4e9;
+
+    --cor-secundaria: #387a58;
+    --cor-destaque: #4b91b5;
+    --cor-destaque-suave: #e5f1f7;
+
+    --cor-borda: #dce6dc;
+
+    --cor-erro: #b54747;
+    --cor-erro-fundo: #fff1f0;
+    --cor-erro-borda: #f0caca;
+
+    --cor-sucesso: #287a50;
+    --cor-sucesso-fundo: #e8f6ed;
+
+    --cor-aviso: #94713b;
+    --cor-aviso-fundo: #fbf3df;
+
+    --cor-foco: #287b59;
+
+    /* Sombras */
+    --sombra-cartao: 0 5px 18px rgb(38 58 50 / 5%);
+    --sombra-cabecalho: 0 2px 12px rgb(38 58 50 / 4%);
+
+    /* Compatibilidade com os estilos existentes */
+    --azul-escuro: var(--cor-texto);
+    --azul: var(--cor-primaria);
+    --azul-claro: var(--cor-primaria-suave);
+    --texto-suave: var(--cor-texto-secundario);
+    --borda: var(--cor-borda);
+    --branco: var(--cor-superficie);
+}
+
+/* Tema Terra */
+:root,
+:root[data-tema="terra"] {
+    color-scheme: light;
+}
+
+/* Tema Espaço */
+:root[data-tema="espaco"] {
+    color-scheme: dark;
+
+    --cor-fundo: #101321;
+    --cor-superficie: #1a2035;
+    --cor-superficie-secundaria: #242c45;
+
+    --cor-texto: #edf0fa;
+    --cor-texto-secundario: #b0bad0;
+    --cor-texto-suave: #8995b0;
+
+    --cor-primaria: #42b883;
+    --cor-primaria-hover: #65d6a0;
+    --cor-primaria-suave: #203d3b;
+
+    --cor-secundaria: #65d6a0;
+    --cor-destaque: #5799e8;
+    --cor-destaque-suave: #243750;
+
+    --cor-borda: #343d57;
+
+    --cor-erro: #ff8585;
+    --cor-erro-fundo: #3b252e;
+    --cor-erro-borda: #70404a;
+
+    --cor-sucesso: #72d69b;
+    --cor-sucesso-fundo: #203b34;
+
+    --cor-aviso: #e8c477;
+    --cor-aviso-fundo: #403823;
+
+    --cor-foco: #65d6a0;
+
+    --sombra-cartao: 0 5px 18px rgb(0 0 0 / 15%);
+    --sombra-cabecalho: 0 2px 12px rgb(0 0 0 / 15%);
+
+    /* Compatibilidade com os estilos existentes */
+    --azul-escuro: var(--cor-texto);
+    --azul: var(--cor-primaria);
+    --azul-claro: var(--cor-primaria-suave);
+    --texto-suave: var(--cor-texto-secundario);
+    --borda: var(--cor-borda);
+    --branco: var(--cor-superficie);
 }
 
 * {
