@@ -32,7 +32,7 @@ O VueNautas permite organizar projetos acadêmicos e suas atividades em um só l
 - **Tarefas vinculadas ao projeto**: cada tarefa pertence a um projeto, e o detalhe do projeto lista suas atividades.
 - **Navegação entre entidades**: a partir de uma tarefa é possível acessar o projeto relacionado, e vice-versa.
 - **Estados de interface**: telas de carregamento, mensagens de erro com opção de tentar novamente e estados vazios.
-- **Layout responsivo** e navegação acessível (rótulos, `aria-label`, foco e atalhos de formulário).
+- **Layout responsivo** e navegação acessível.
 
 ## Tecnologias
 
@@ -99,9 +99,6 @@ O VueNautas permite organizar projetos acadêmicos e suas atividades em um só l
 | --- | --- |
 | `npm run dev` | Inicia o servidor de desenvolvimento do Vite |
 | `npm run api` | Inicia o `json-server` na porta 3000 |
-| `npm run build` | Verifica os tipos e gera o build de produção em `dist/` |
-| `npm run preview` | Serve localmente o build de produção |
-| `npm run postinstall` | Aplica o patch de IDs sequenciais no `json-server` |
 
 ## Estrutura do projeto
 
@@ -187,6 +184,7 @@ O arquivo `db.json` é usado pelo `json-server`. O arquivo `db.seed.json` manté
 O deploy é automático pelo workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) a cada push na branch `main` (ou manualmente em **Actions > Deploy no GitHub Pages > Run workflow**).
 
 Aplicação publicada: <https://thiagopietrobon.github.io/VueNautas/>
+<<<<<<< HEAD
 
 ### Configuração inicial
 
@@ -195,3 +193,5 @@ Aplicação publicada: <https://thiagopietrobon.github.io/VueNautas/>
 3. Faça push na branch `main`.
 
 > O GitHub Pages hospeda apenas o front-end estático. A API (`json-server`) está publicada no Render em <https://vuenautas.onrender.com>, com CORS habilitado para o site.
+=======
+>>>>>>> 9cd6dd6fcd502011c964fc7bfbe476ef9b7e134b
