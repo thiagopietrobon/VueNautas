@@ -60,7 +60,7 @@ async function requisitar<T>(
     } catch {
         throw new ErroApi(
             0,
-            "Não foi possível conectar à API. Verifique se o json-server está rodando na porta 3000.",
+            "Não foi possível conectar à API. Verifique sua conexão ou tente novamente mais tarde.",
         );
     }
 
