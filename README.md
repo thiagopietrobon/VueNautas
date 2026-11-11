@@ -184,14 +184,6 @@ O arquivo `db.json` é usado pelo `json-server`. O arquivo `db.seed.json` manté
 O deploy é automático pelo workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) a cada push na branch `main` (ou manualmente em **Actions > Deploy no GitHub Pages > Run workflow**).
 
 Aplicação publicada: <https://thiagopietrobon.github.io/VueNautas/>
-<<<<<<< HEAD
 
-### Configuração inicial
 
-1. No GitHub, acesse **Settings > Pages** e defina **Source** como **GitHub Actions**. O workflow também tenta habilitar o Pages automaticamente.
-2. Em **Settings > Secrets and variables > Actions > Variables**, confirme a variável `VITE_API_URL` com o valor `https://vuenautas.onrender.com`.
-3. Faça push na branch `main`.
 
-> O GitHub Pages hospeda apenas o front-end estático. A API (`json-server`) está publicada no Render em <https://vuenautas.onrender.com>, com CORS habilitado para o site.
-=======
->>>>>>> 9cd6dd6fcd502011c964fc7bfbe476ef9b7e134b
