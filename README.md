@@ -4,14 +4,16 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white)](https://vite.dev/)
 [![Deploy](https://img.shields.io/badge/deploy-GitHub%20Pages-2ea44f?logo=github)](https://thiagopietrobon.github.io/VueNautas/)
+[![API](https://img.shields.io/badge/API-Render-46e3b7?logo=render&logoColor=white)](https://vuenautas.onrender.com/projetos)
 
 Gerenciador de Tarefas Acadêmicas desenvolvido como trabalho de **G2** da disciplina de Desenvolvimento Web/Frontend.
 
-**Aplicação publicada:** <https://thiagopietrobon.github.io/VueNautas/>
+- **Aplicação publicada:** <https://thiagopietrobon.github.io/VueNautas/>
+- **API publicada:** <https://vuenautas.onrender.com>
 
 ## Sobre o projeto
 
-O VueNautas permite organizar projetos acadêmicos e suas atividades em um só lugar. As tarefas podem ser acompanhadas em uma **visão de lista** ou em um **quadro Kanban**, com filtros por título, status e prioridade. O cadastro, a edição, a mudança de status e a exclusão são feitos diretamente pela interface, consumindo uma API REST local (`json-server`).
+O VueNautas permite organizar projetos acadêmicos e suas atividades em um só lugar. As tarefas podem ser acompanhadas em uma **visão de lista** ou em um **quadro Kanban**, com filtros por título, status e prioridade. O cadastro, a edição, a mudança de status e a exclusão são feitos diretamente pela interface, consumindo uma API REST (`json-server`) publicada no [Render](https://render.com/).
 
 ### Integrantes
 
@@ -139,7 +141,14 @@ O VueNautas permite organizar projetos acadêmicos e suas atividades em um só l
 
 ## API e modelo de dados
 
-A aplicação consome uma API REST via `fetch`. Por padrão, a URL é `http://localhost:3000`, mas pode ser alterada pela variável de ambiente `VITE_API_URL`.
+A aplicação consome uma API REST via `fetch`. A URL é definida pela variável de ambiente `VITE_API_URL`:
+
+| Ambiente | URL da API |
+| --- | --- |
+| Desenvolvimento local | `http://localhost:3000` (definida em `.env.development`) |
+| Produção | `https://vuenautas.onrender.com` (variável `VITE_API_URL` no GitHub Actions) |
+
+> A API está hospedada no plano gratuito do Render. Após um período de inatividade, a primeira requisição pode demorar alguns segundos enquanto o serviço é reativado.
 
 ### Projeto
 
@@ -182,7 +191,7 @@ Aplicação publicada: <https://thiagopietrobon.github.io/VueNautas/>
 ### Configuração inicial
 
 1. No GitHub, acesse **Settings > Pages** e defina **Source** como **GitHub Actions**. O workflow também tenta habilitar o Pages automaticamente.
-2. Em **Settings > Secrets and variables > Actions > Variables**, cadastre a variável `VITE_API_URL` com a URL pública da API (por exemplo, `https://minha-api.exemplo.com`). Sem ela, o site usará `http://localhost:3000`.
+2. Em **Settings > Secrets and variables > Actions > Variables**, confirme a variável `VITE_API_URL` com o valor `https://vuenautas.onrender.com`.
 3. Faça push na branch `main`.
 
-> O GitHub Pages hospeda apenas o front-end estático. A API (`json-server`) precisa estar publicada em outro serviço e configurada em `VITE_API_URL` para que o CRUD funcione em produção.
+> O GitHub Pages hospeda apenas o front-end estático. A API (`json-server`) está publicada no Render em <https://vuenautas.onrender.com>, com CORS habilitado para o site.
